@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아파트멘터리 OEM·ODM 공급망 관리 체계 (v3)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --paper:#FAF9F6; --ink:#20242E; --ink-soft:#4A505E; --ink-faint:#8A909E;
+    --line:#E7E4DC; --line-soft:#F0EEE8;
+    --accent:#0F766E; --accent-soft:#E3F0EE;
+    --ok:#1B7A45; --ok-bg:#E9F3EC; --ok-line:#BFDDC7;
+    --open:#B45309; --open-bg:#FAF0DE; --open-line:#E4C892;
+    --neutral:#3F4656; --neutral-bg:#EEEFF2;
+    --scm:#0F766E; --scm-bg:#E3F0EE;
+    --biz:#3155A6; --biz-bg:#E7EDF8;
+    --dev:#6B4BA3; --dev-bg:#EEE8F6;
+    --buy:#A6683F; --buy-bg:#F6ECE3;
+    --font:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font); line-height:1.6; font-size:15px; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px; margin:0 auto; padding:52px 28px 90px;}
+
+  .eyebrow{font-size:12px; letter-spacing:.14em; font-weight:700; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:30px; line-height:1.24; font-weight:800; margin:12px 0 10px; letter-spacing:-.012em;}
+  .lede{font-size:16px; color:var(--ink-soft); margin:0 0 20px; max-width:66ch;}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12.5px; color:var(--ink-faint);
+    padding:13px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .meta b{color:var(--ink-soft); font-weight:600;}
+
+  section{margin-top:50px;}
+  .sec-label{font-size:12px; letter-spacing:.12em; font-weight:700; color:var(--ink-faint); text-transform:uppercase; margin-bottom:6px;}
+  h2{font-size:23px; font-weight:800; margin:0 0 5px; letter-spacing:-.01em;}
+  .sub{color:var(--ink-soft); margin:0 0 18px; font-size:14.5px;}
+  h3{font-size:16px; font-weight:700; margin:24px 0 8px;}
+  p{margin:0 0 12px;}
+  strong{font-weight:700;}
+  ul{margin:0 0 12px; padding-left:19px;} li{margin-bottom:4px;}
+
+  /* TLDR */
+  .tldr{background:#fff; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:10px; padding:20px 22px; margin-top:24px;}
+  .tldr .k{font-size:11.5px; letter-spacing:.1em; font-weight:700; color:var(--accent); text-transform:uppercase;}
+  .tldr ul{margin:10px 0 0;} .tldr li{margin-bottom:6px; font-size:14.5px;}
+
+  /* glossary */
+  .terms{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff;}
+  .term{display:grid; grid-template-columns:120px 1fr; gap:16px; padding:11px 16px; border-top:1px solid var(--line-soft);}
+  .term:first-child{border-top:none;}
+  .term .t{font-weight:700; font-size:14px;}
+  .term .d{color:var(--ink-soft); font-size:13.5px;}
+
+  /* facts */
+  .facts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .fact{background:#fff; border:1px solid var(--line); border-radius:9px; padding:12px 15px;}
+  .fact .ft{font-size:11.5px; font-weight:700; color:var(--accent); letter-spacing:.03em; text-transform:uppercase; margin-bottom:4px;}
+  .fact .fd{font-size:13.5px; color:var(--ink-soft);} .fact .fd b{color:var(--ink);}
+
+  /* flow */
+  .flow{display:flex; align-items:stretch; flex-wrap:wrap; gap:6px; margin:6px 0;}
+  .node{flex:1 1 100px; min-width:100px; background:#fff; border:1.5px solid var(--line); border-radius:9px; padding:10px;}
+  .node .role{font-size:10px; letter-spacing:.02em; font-weight:700; color:var(--ink-faint); text-transform:uppercase;}
+  .node .who{font-weight:700; font-size:13.5px; margin-top:2px;}
+  .node .act{font-size:11px; color:var(--ink-soft); margin-top:2px; line-height:1.3;}
+  .node.b{border-color:var(--accent); background:var(--accent-soft);}
+  .arrow{display:flex; align-items:center; color:var(--ink-faint); font-size:16px; font-weight:700;}
+
+  /* tables */
+  .tbl-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:11px; background:#fff;}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px;}
+  th,td{text-align:left; padding:11px 14px; border-top:1px solid var(--line-soft); vertical-align:top;}
+  thead th{background:#F4F2EC; border-top:none; font-size:12px; font-weight:700; color:var(--ink-soft); white-space:nowrap;}
+  tbody tr:first-child td{border-top:none;}
+  td .fn{font-weight:700; color:var(--ink);} td .fn small{display:block; font-weight:500; color:var(--ink-faint); font-size:11.5px; margin-top:2px;}
+  .owner{display:inline-block; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:15px; white-space:nowrap;}
+  .o-biz{background:var(--biz-bg); color:var(--biz);} .o-dev{background:var(--dev-bg); color:var(--dev);}
+  .o-buy{background:var(--buy-bg); color:var(--buy);} .o-scm{background:var(--scm-bg); color:var(--scm);}
+  .o-qa{background:#FCE8E6; color:#B0413A;}
+  .note{font-size:12.5px; color:var(--ink-soft);} .note b{color:var(--ink);}
+  .stock-us{color:var(--scm); font-weight:700;}
+  tr.gray-row td{background:#FDF8EF;}
+
+  /* RACI grid */
+  .raci{border-collapse:collapse; width:100%; min-width:620px; font-size:12.5px;}
+  .raci th,.raci td{text-align:center; padding:9px 6px; border:1px solid var(--line-soft);}
+  .raci thead th{background:#F4F2EC; font-size:11.5px; white-space:nowrap;}
+  .raci td.stage{text-align:left; font-weight:700; white-space:nowrap; background:#FBFAF7;}
+  .raci td.stage small{display:block; font-weight:600; color:var(--open); font-size:10.5px; margin-top:2px;}
+  .raci tr.blocked td.stage{border-left:3px solid var(--open);}
+  .raci tr.blocked td{background:#FDF6EA;}
+  .b-r{color:var(--accent); font-weight:800;} .b-a{color:var(--ink); font-weight:800; text-decoration:underline;}
+  .b-c{color:var(--ink-faint); font-weight:700;} .b-i{color:#B9BECB; font-weight:600;}
+  .raci-legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:12px; color:var(--ink-soft);}
+  .raci-legend b{color:var(--ink);}
+  .warn-chip{display:inline-block; font-size:11px; font-weight:800; color:var(--open); background:var(--open-bg); border:1px solid var(--open-line); border-radius:6px; padding:1px 7px;}
+
+  /* dependency chain */
+  .chain{display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; margin:8px 0;}
+  .link{flex:1 1 200px; min-width:190px; background:var(--open-bg); border:1.5px solid var(--open-line); border-radius:11px; padding:15px 16px;}
+  .link .ln{font-size:11px; font-weight:800; letter-spacing:.05em; color:var(--open); text-transform:uppercase;}
+  .link .lt{font-size:15px; font-weight:800; margin:4px 0 6px; color:#6b4212;}
+  .link .ld{font-size:12.5px; color:#7a5a2e; line-height:1.45;}
+  .clink{display:flex; align-items:center; color:var(--open); font-weight:800; font-size:18px;}
+  .chain-root{margin-top:10px; background:#fff; border:1px dashed var(--open-line); border-radius:10px; padding:13px 16px; font-size:13.5px; color:var(--ink-soft);}
+  .chain-root b{color:var(--open);}
+
+  /* ledger */
+  .grouplbl{font-size:12.5px; font-weight:800; margin:20px 0 8px;}
+  .grouplbl.g-ok{color:var(--ok);} .grouplbl.g-open{color:var(--open);}
+  .ledger{display:flex; flex-direction:column; gap:9px;}
+  .row{display:grid; grid-template-columns:18px 1fr auto; align-items:start; gap:11px; background:#fff; border:1px solid var(--line); border-radius:9px; padding:12px 14px;}
+  .row.ok{border-left:4px solid var(--ok);} .row.open{border-left:4px solid var(--open);} .row.root{border-left:4px solid var(--open); background:#FDF6EA;}
+  .dot{width:8px; height:8px; border-radius:50%; margin-top:6px;}
+  .row.ok .dot{background:var(--ok);} .row.open .dot,.row.root .dot{background:var(--open);}
+  .row .txt{font-size:14px;} .row .txt small{display:block; color:var(--ink-faint); font-size:12px; margin-top:2px;}
+  .row .txt .rootmark{font-size:10.5px; font-weight:800; color:#fff; background:var(--open); border-radius:5px; padding:1px 6px; margin-right:6px;}
+  .owner2{font-size:11px; font-weight:700; white-space:nowrap; padding:3px 9px; border-radius:15px; margin-top:1px;}
+  .owner2.ext{background:var(--open-bg); color:var(--open);} .owner2.int{background:var(--neutral-bg); color:var(--neutral);} .owner2.na{background:var(--ok-bg); color:var(--ok);}
+
+  /* checklist */
+  .checks{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .chk{background:#fff; border:1px solid var(--line); border-radius:9px; padding:13px 15px;}
+  .chk .ch{font-size:12px; font-weight:800; color:var(--accent); letter-spacing:.03em; text-transform:uppercase; margin-bottom:7px;}
+  .chk ul{margin:0; padding-left:17px; font-size:13px;} .chk li{margin-bottom:5px; color:var(--ink-soft);}
+  .chk li b{color:var(--ink);}
+
+  /* steps */
+  .steps{counter-reset:s;}
+  .step{display:grid; grid-template-columns:30px 1fr; gap:12px; padding:14px 0; border-top:1px solid var(--line);}
+  .step:first-child{border-top:none;}
+  .step::before{counter-increment:s; content:counter(s); grid-row:1/3; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+  .step .st{font-weight:700; font-size:15px;} .step .sd{font-size:13.5px; color:var(--ink-soft); margin-top:2px;}
+
+  /* details */
+  .appendix{margin-top:54px; padding-top:22px; border-top:2px solid var(--line);}
+  details{background:#fff; border:1px solid var(--line); border-radius:9px; margin-bottom:9px; overflow:hidden;}
+  details summary{cursor:pointer; padding:13px 16px; font-weight:700; font-size:14px; list-style:none; display:flex; align-items:center; gap:9px;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{content:'+'; color:var(--accent); font-weight:800; font-size:17px; width:14px;}
+  details[open] summary::before{content:'–';}
+  details summary:hover{background:#FBFAF7;}
+  details .dbody{padding:2px 16px 16px 39px; font-size:13.5px; color:var(--ink-soft);}
+  details .dbody p{margin:0 0 9px;} details .dbody ul{padding-left:17px;} details .dbody li{margin-bottom:4px;}
+  details .dbody b{color:var(--ink);}
+
+  .footnote{margin-top:44px; padding-top:15px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-faint);}
+  @media(max-width:680px){
+    .wrap{padding:38px 16px 70px;} h1{font-size:25px;}
+    .facts,.checks{grid-template-columns:1fr;} .term{grid-template-columns:1fr; gap:2px;}
+    .flow .arrow,.clink{display:none;} .node,.link{flex-basis:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="eyebrow">SCM · 공급망 관리 체계 · v3 (아이데이션)</div>
+    <h1>아파트멘터리 OEM·ODM<br>공급망 관리 체계</h1>
+    <p class="lede">그룹사 최초 OEM/ODM 착수 건. 맨땅에서 정리한 초기 아이데이션이며, 결론은 도표로, 근거·풀이는 하단 펼치기로 뒀습니다.</p>
+    <div class="meta">
+      <span><b>과제</b> OEM/ODM 수주건 공급망 관리 체계 수립</span>
+      <span><b>공유 대상</b> SCM 상급자 · 슬로우베드사업팀(OEM/ODM 담당)</span>
+      <span><b>상태</b> 초기 아이데이션 · 결정 대기</span>
+    </div>
+  </header>
+
+  <!-- TLDR -->
+  <div class="tldr">
+    <div class="k">한눈에</div>
+    <ul>
+      <li><strong>구조</strong> — 아파트멘터리 = 내부 매트리스 + 외주 프레임 투트랙.</li>
+      <li><strong>R&amp;R</strong> — 고객 소통=유통사업팀 / 공급처 소통=procurement팀(외주)·유통사업팀(내부) / 개발=슬로우베드사업팀+연구소 / 품질=품질관리팀 / <strong>수주 이후 계획·재고·납기=SCM</strong>.</li>
+      <li><strong>최상류 미결</strong> — <strong>코드 귀속 = 매출·재고 인식 = 정산</strong>이 한 덩어리로 막혀 있음. "슬로우베드가 팔지 않는 재고를 슬로우베드 재고로 잡는 게 맞나"가 핵심.</li>
+      <li><strong>리스크</strong> — 프레임 외주가 JIT 거부 → 개런티 재고생산으로 재고 위험이 우리로 이전.</li>
+    </ul>
+  </div>
+
+  <!-- 1. 개념 -->
+  <section>
+    <div class="sec-label">01 — 개념</div>
+    <h2>용어</h2>
+    <div class="terms">
+      <div class="term"><div class="t">OEM / ODM</div><div class="d">주문자 사양대로 제조(OEM) / 제조사가 개발·설계까지 하여 주문자 브랜드로 납품(ODM). 매트리스는 개발이 우리 안에 있어 ODM 성격.</div></div>
+      <div class="term"><div class="t">3PL (레터스)</div><div class="d">보관·운송·시공 대행. 맡아둘 뿐 소유하지 않음.</div></div>
+      <div class="term"><div class="t">위탁 / 임가공</div><div class="d">위탁 = 외주처가 자재조달·완제품 제작 후 우리가 매입 / 임가공 = 자재를 우리가 대주고 가공만. 프레임은 위탁(일부 사급).</div></div>
+      <div class="term"><div class="t">JIT (오더베이스)</div><div class="d">주문 후 생산·발주, 재고 미보유. 아파트멘터리의 요구 운영 방식.</div></div>
+    </div>
+  </section>
+
+  <!-- 2. 배경 -->
+  <section>
+    <div class="sec-label">02 — 배경</div>
+    <h2>사업 배경</h2>
+    <p class="sub">기존 외주 업체 납품 불가 → 슬로우베드에 OEM 요청, 개발 완료 상태에서 인프라·공급망 세팅 단계.</p>
+    <div class="facts">
+      <div class="fact"><div class="ft">사업 성격</div><div class="fd"><b>그룹사 내 OEM/ODM 판매 최초.</b> 선례 없이 표준을 만드는 과제.</div></div>
+      <div class="fact"><div class="ft">수량·리드타임</div><div class="fd">B2C 월 <b>약 30세트</b>(소량). 주문~시공 10일~2주. 고객사 <b>JIT 요구</b>.</div></div>
+      <div class="fact"><div class="ft">코드 = 이동 게이트</div><div class="fd"><b>코드 없이 실물 이동 불가.</b> 수주 후 코드·ERP 등록 → OMS 연동 순.</div></div>
+      <div class="fact"><div class="ft">원가·계약 변수</div><div class="fd">양지 입고 기준 원가 재산정. 표준 <b>납품계약서 공유 대기</b>(고객사 내부 검토 중).</div></div>
+    </div>
+  </section>
+
+  <!-- 3. 공급 구조 -->
+  <section>
+    <div class="sec-label">03 — 공급 구조</div>
+    <h2>공급 흐름 · 소싱</h2>
+    <div class="flow">
+      <div class="node b"><div class="role">1 수주</div><div class="who">유통사업팀</div><div class="act">고객 발주→확정</div></div>
+      <div class="arrow">›</div>
+      <div class="node"><div class="role">2 생산</div><div class="who">투트랙</div><div class="act">내부 매트 / 외주 프레임</div></div>
+      <div class="arrow">›</div>
+      <div class="node"><div class="role">3 입고</div><div class="who">양지 창고</div><div class="act">입고·검수</div></div>
+      <div class="arrow">›</div>
+      <div class="node"><div class="role">4 물류·재고</div><div class="who">레터스</div><div class="act">보관·배송</div></div>
+      <div class="arrow">›</div>
+      <div class="node"><div class="role">5 시공</div><div class="who">레터스</div><div class="act">현장 설치</div></div>
+    </div>
+    <div class="tbl-scroll" style="margin-top:14px;">
+      <table>
+        <thead><tr><th style="width:15%">품목</th><th style="width:17%">생산</th><th style="width:20%">방식</th><th style="width:22%">공급처 소통</th><th>재고 소유</th></tr></thead>
+        <tbody>
+          <tr><td><div class="fn">매트리스</div></td><td>내부 · 일룸안성</td><td>내부 제조</td><td><span class="owner o-biz">유통사업팀</span></td><td><span class="note">코드 귀속 미결 →<br>05 참조</span></td></tr>
+          <tr><td><div class="fn">프레임</div></td><td>외주 업체</td><td>위탁(일부 사급)</td><td><span class="owner o-buy">procurement팀</span></td><td><span class="note">코드 귀속 미결 +<br>양지 입고 시점</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. R&R + RACI -->
+  <section>
+    <div class="sec-label">04 — R&amp;R</div>
+    <h2>기능 경계와 걸림돌</h2>
+    <p class="sub">개편 후 정착 구조. RACI 그리드에서 <span class="warn-chip">⚠ 결정 대기</span> 표시가 막힌 지점입니다.</p>
+
+    <div class="tbl-scroll">
+      <table class="raci">
+        <thead>
+          <tr>
+            <th style="text-align:left;">단계</th>
+            <th>유통<br>사업팀</th><th>슬로우<br>베드·연구소</th><th>procure<br>ment팀</th><th>생산</th><th>품질<br>관리팀</th><th>SCM</th><th>레터스</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="blocked">
+            <td class="stage">수주<small>⚠ 코드·매출 귀속</small></td>
+            <td><span class="b-a">A</span></td><td>–</td><td>–</td><td>–</td><td>–</td><td><span class="b-i">I</span></td><td>–</td>
+          </tr>
+          <tr>
+            <td class="stage">생산·내부<br><span style="font-weight:500;color:var(--ink-faint);font-size:11px;">매트/일룸안성</span></td>
+            <td><span class="b-c">C</span></td><td><span class="b-c">C</span></td><td>–</td><td><span class="b-r">R</span></td><td><span class="b-c">C</span></td><td><span class="b-a">A</span></td><td>–</td>
+          </tr>
+          <tr>
+            <td class="stage">생산·외주<br><span style="font-weight:500;color:var(--ink-faint);font-size:11px;">프레임</span></td>
+            <td>–</td><td><span class="b-c">C</span></td><td><span class="b-r">R</span></td><td><span class="b-r">R</span></td><td><span class="b-c">C</span></td><td><span class="b-a">A</span></td><td>–</td>
+          </tr>
+          <tr class="blocked">
+            <td class="stage">입고·검수<small>⚠ 소유권 이전 시점</small></td>
+            <td>–</td><td>–</td><td>–</td><td><span class="b-r">R</span></td><td><span class="b-r">R</span></td><td><span class="b-a">A</span></td><td>–</td>
+          </tr>
+          <tr>
+            <td class="stage">물류·재고</td>
+            <td><span class="b-c">C</span></td><td>–</td><td>–</td><td>–</td><td>–</td><td><span class="b-a">A</span></td><td><span class="b-r">R</span></td>
+          </tr>
+          <tr class="blocked">
+            <td class="stage">시공<small>⚠ 클레임 1차 접점</small></td>
+            <td><span class="b-a">A</span></td><td>–</td><td>–</td><td>–</td><td><span class="b-c">C</span></td><td><span class="b-c">C</span></td><td><span class="b-r">R</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="raci-legend">
+      <span><b class="b-r">R</b> 수행</span><span><b class="b-a">A</b> 최종책임</span><span><b class="b-c">C</b> 협의</span><span><b class="b-i">I</b> 공유</span>
+      <span style="color:var(--open);"><b class="b-c" style="color:var(--open);">·</b> 생산 소통: 내부=유통사업팀 C, 외주=procurement팀 R</span>
+    </div>
+    <p class="note" style="margin-top:10px;">품질(스펙·검사·합불·업체 감사)은 <b>품질관리팀</b>. SCM은 품질 이슈의 <b>납기·소싱 영향</b>만 관리. 개발이 확정한 스펙 문서가 소통 담당에게 넘어가는 것이 첫 핸드오프.</p>
+  </section>
+
+  <!-- 5. 최상류 미결 -->
+  <section>
+    <div class="sec-label">05 — 최상류 미결</div>
+    <h2>코드 = 인식 = 정산</h2>
+    <p class="sub">세 개가 사슬로 묶여 있어, 맨 앞(코드 귀속)이 안 정해지면 뒤가 다 막힙니다. SCM 단독 결정 불가.</p>
+    <div class="chain">
+      <div class="link">
+        <div class="ln">① 코드 귀속</div>
+        <div class="lt">슬로우베드 코드? 별도 코드?</div>
+        <div class="ld">코드는 브랜드 단위로만 물림 (회사=일룸 / 브랜드=슬로우베드). 어느 코드를 따느냐가 아래를 다 결정.</div>
+      </div>
+      <div class="clink">→</div>
+      <div class="link">
+        <div class="ln">② 매출·재고 인식</div>
+        <div class="lt">코드 따라 자동 귀속</div>
+        <div class="ld">슬로우베드 코드 → 슬로우베드 브랜드 매출·재고. <b>팔지 않는 재고를 슬로우베드 재고로 잡는 게 맞나?</b></div>
+      </div>
+      <div class="clink">→</div>
+      <div class="link">
+        <div class="ln">③ 정산</div>
+        <div class="lt">제조매출 vs 수익쉐어</div>
+        <div class="ld">회계 논리상 매트리스사업부(슬로우베드+유통사업팀) 귀속이 자연스러움. ①과 정합해야 함.</div>
+      </div>
+    </div>
+    <div class="chain-root">
+      <b>근본 원인 —</b> 원래 우리 구조는 "사업부 = 브랜드"라 문제가 없었으나, <b>조직개편(매트리스유통사업팀 신설)</b>이 이 등식을 깨면서 "OEM/ODM은 슬로우베드 브랜드 상품이 아닌데 슬로우베드 코드를 강제로 따야 하나"라는 공백이 생김. → <b>재무 + 사업부 + 유통사업팀</b> 공동 결정 필요.
+    </div>
+  </section>
+
+  <!-- 6. 결정 원장 -->
+  <section>
+    <div class="sec-label">06 — 결정 원장</div>
+    <h2>정한 것 · 정할 것</h2>
+
+    <div class="grouplbl g-ok">확정</div>
+    <div class="ledger">
+      <div class="row ok"><span class="dot"></span><div class="txt">3PL(레터스) 재고 소유 X, 보관 책임만</div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">코드·ERP·OMS 체계 = 그룹사 기준, 내부 동일 구조<small>단, "어느 브랜드 코드"는 05 미결.</small></div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">기능 경계 확정 (고객=유통 / 외주=procurement / 개발 / 품질 / 공급망=SCM)<small>프레임 외주 소통 = procurement팀으로 확정(그레이존 해소).</small></div><span class="owner2 na">닫힘</span></div>
+    </div>
+
+    <div class="grouplbl g-open">결정 필요</div>
+    <div class="ledger">
+      <div class="row root"><span class="dot"></span><div class="txt"><span class="rootmark">최상류</span>코드 귀속 = 매출·재고 인식 = 정산<small>한 덩어리. OEM/ODM에 슬로우베드 코드를 딸 것인가부터.</small></div><span class="owner2 ext">사업부</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">개런티 재고 성격 — 매입 약정 여부·초과분 소진 규칙<small>재고 위험 우리 이전분. 누적재고화 관리.</small></div><span class="owner2 ext">계약·재무</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">소유권 이전 시점 (양지 입고 기준 여부)<small>계약서 소재 미확인. 별도 확인 필요.</small></div><span class="owner2 ext">계약·재무</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">AS 조건·책임 범위<small>표준 납품계약서에 포함. 고객사 공유 대기.</small></div><span class="owner2 ext">계약·고객사</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">클레임 1차 접점 공백 (셀프 해피콜 前, 26 3Q까지)<small>레터스 미제공. 누가 응대?</small></div><span class="owner2 int">사업부·SCM</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">JIT vs 재고 보유 운영 방식<small>고객 오더베이스 요구 ↔ 개런티 재고 공급.</small></div><span class="owner2 ext">고객사 협의</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">(사업 판단) 외주까지 껴서 OEM/ODM 하는 목적<small>인프라 수익화 vs 통합 수주 방어. 설계 아닌 사업 판단.</small></div><span class="owner2 int">상급자·사업부</span></div>
+    </div>
+  </section>
+
+  <!-- 7. 인프라 세팅 -->
+  <section>
+    <div class="sec-label">07 — SCM 실행</div>
+    <h2>인프라 세팅 체크리스트</h2>
+    <p class="sub">SCM 영역이 규명됐으니 챙길 항목. 수주가 전체 트리거 — 코드부터 순차.</p>
+    <div class="checks">
+      <div class="chk">
+        <div class="ch">수주 트리거 · 순차</div>
+        <ul>
+          <li><b>단품코드 생성·ERP 등록</b> (그룹사 기준, 박스 단위) — <span class="warn-chip" style="font-size:10px;">05 선행</span></li>
+          <li><b>WMS 연동용 코드 등록</b> (코드 없이 실물 이동 불가)</li>
+          <li><b>OMS 아이디 부여·레터스 연동</b> (코드 완료 후)</li>
+          <li>아파트멘터리 OMS 접근 정의 (주문·재고·AS 조회, 대리점 수준)</li>
+        </ul>
+      </div>
+      <div class="chk">
+        <div class="ch">상시 운영</div>
+        <ul>
+          <li><b>재고 가시성</b> — 출고+생산지 창고 합산 모니터링에 OEM 품목 편입</li>
+          <li><b>납기 모니터링</b> — 투트랙 지연 조기 감지·대응</li>
+          <li><b>개런티 재고 트래킹</b> — buffer·초과분 소진 관리</li>
+          <li><b>품질→공급망 대응 플로우</b> — 품질관리팀 판정 ↔ SCM 소싱·납기 조정</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 다음 단계 -->
+  <section>
+    <div class="sec-label">08 — 다음 단계</div>
+    <h2>어디서부터</h2>
+    <div class="steps">
+      <div class="step"><div class="st">최상류 결정 요청 (05)</div><div class="sd">재무·사업부·유통사업팀에 "코드 귀속 = 인식 = 정산" 공동 판단 요청. 나머지 인프라가 여기서 시작.</div></div>
+      <div class="step"><div class="st">계약·재무 확인 3건</div><div class="sd">개런티 재고 성격 / 소유권 이전 시점 / AS 조건. 결정 원장 라벨이 요청처.</div></div>
+      <div class="step"><div class="st">코드 확정 후 인프라 세팅 착수</div><div class="sd">07 체크리스트 순차 실행. 이후 단계별 RACI 상세표로 전개.</div></div>
+    </div>
+  </section>
+
+  <!-- APPENDIX -->
+  <div class="appendix">
+    <div class="sec-label">부록 — 상세 설명 (필요 시)</div>
+    <h2 style="font-size:19px; margin-bottom:14px;">이해 안 될 때 펼쳐보기</h2>
+
+    <details>
+      <summary>코드 = 인식 = 정산이 왜 한 덩어리인가</summary>
+      <div class="dbody">
+        <p>코드는 <b>브랜드 단위</b>로만 물립니다(회사=일룸 / 브랜드=슬로우베드). 슬로우베드 코드를 따는 순간 시스템이 자동으로 슬로우베드 브랜드 매출·재고로 인식하고, 정산도 그 브랜드 손익으로 흘러갑니다. 즉 코드 하나가 인식·정산을 다 끌고 갑니다.</p>
+        <p>문제는 <b>"슬로우베드가 팔지 않는(고객사=아파트멘터리) 재고를 슬로우베드 재고로 잡는 게 회계적으로 맞나"</b>입니다. 논리상 매트리스사업부(슬로우베드사업팀+매트리스유통사업팀) 귀속이 자연스러운데, 우리 구조는 <b>사업부 ≈ 브랜드</b>라 원래 구분이 없었습니다. 조직개편으로 사업부가 브랜드보다 커지면서 이 등식이 깨졌고, 그 틈에서 "어느 코드를 딸지"가 공백으로 남았습니다.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>개런티 재고 — 왜 우리 위험이 되나</summary>
+      <div class="dbody">
+        <p>프레임 외주는 원래 위탁생산(업체 자재조달)이라 매입 전까지 업체 재고여야 합니다. 그런데 월 30개 소량이라 JIT 견적을 업체가 거부 → <b>월 개런티 수량 재고생산</b>으로 전환. 이때 재고 위험이 업체 → 우리로 넘어옵니다.</p>
+        <ul>
+          <li>개런티가 <b>매입 약정</b>이면 입고 시점에 우리 재고. 고객 미인수 초과분 = 우리 보유.</li>
+          <li>계상 시점은 <b>양지 입고 기준</b>과 연동 → 입고 전 업체 보유분은 아직 업체 것.</li>
+          <li>월 수요(30) &lt; 개런티면 buffer가 z-grade성 누적재고로 축적 → 소진 규칙 필요.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>품질관리팀 vs SCM 경계</summary>
+      <div class="dbody">
+        <p><b>품질관리팀</b> — 품질 기준 수립, 입고 검사, 합불 판정, 품질 이슈 원인 판정, 업체 품질 감사.</p>
+        <p><b>SCM</b> — 품질 이슈가 <b>납기·재고에 미치는 영향</b>만. 업체가 품질 문제로 못 대면 대체 소싱·재고 버퍼·납기 재조정. "업체 교체·추가개발" 판단(품질 사유)은 품질관리팀, 그 결과의 공급망 실행만 SCM.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>외주까지 껴서 OEM/ODM 하는 목적 (A/B 가설)</summary>
+      <div class="dbody">
+        <p>procurement팀장 컨선의 본질은 "OEM/ODM인데 왜 내부 제조를 안 쓰고 외주(프레임)를 끼나"였습니다. 두 가설:</p>
+        <ul>
+          <li><b>A. 인프라 수익화</b> — 우리 코드·물류·3PL 인프라를 외주 품목에도 얹어 관리 마진을 먹는 모델.</li>
+          <li><b>B. 통합 수주 방어</b> — 매트만으론 세트 수주를 못 따니 프레임까지 원소스로 묶어 고객사를 잡음.</li>
+        </ul>
+        <p>어느 쪽이든 <b>SCM의 실무 개입 범위는 동일</b>합니다(달라지는 건 정산 층뿐). 따라서 이건 SCM 설계 변수가 아니라 "이 사업을 확장할 가치가 있나"라는 사업 판단 → 상급자·사업부 몫으로 남깁니다.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>첨부 출처 · 정정 메모</summary>
+      <div class="dbody">
+        <p>근거: 260610 3PL 미팅록, 260608 유관부서 공유.</p>
+        <ul>
+          <li>"계약서 공유 어려움" — 260608에 근거 있음(참고용 납품계약서 공유 요청에 "어렵다", "법무·내부 검토 필요").</li>
+          <li><b>정정:</b> "소유권 이전 시점이 그 계약서에 있다"는 문서에 없음. 초안의 추정이었으므로 <b>별도 확인 항목</b>으로 분리함.</li>
+          <li>"OEM/ODM 수주건 공급망 관리 체계 수립 @권하정"이 3PL 미팅 후속액션에 명시 — 본 문서가 그 과제.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <div class="footnote">v3 · 초기 아이데이션. 결정이 채워지는 대로 06 원장·05 사슬을 갱신하고 단계별 RACI 상세표로 전개합니다.</div>
+
+</div>
+</body>
+</html>
