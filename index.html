@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>아파트멘터리 OEM·ODM 공급망 관리 체계 (v3)</title>
+<title>아파트멘터리 OEM·ODM 공급망 관리 체계 (v4)</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
 <style>
@@ -98,6 +98,44 @@
   .raci-legend b{color:var(--ink);}
   .warn-chip{display:inline-block; font-size:11px; font-weight:800; color:var(--open); background:var(--open-bg); border:1px solid var(--open-line); border-radius:6px; padding:1px 7px;}
 
+  /* interactive stage view */
+  .stagebar{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:6px 0 16px;}
+  .stagetab{position:relative; flex:1 1 auto; min-width:96px; background:var(--surface); border:1.5px solid var(--line);
+    border-radius:10px; padding:12px 10px 12px 12px; font-family:var(--font); font-size:15.5px; font-weight:700; color:var(--ink-soft);
+    cursor:pointer; display:flex; align-items:center; gap:8px; transition:all .15s; box-shadow:0 1px 2px rgba(17,24,39,.05);}
+  .stagetab:hover{border-color:var(--accent); color:var(--ink);}
+  .stagetab.active{background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(13,148,136,.28);}
+  .stagetab .sn{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+    background:var(--surface-2); color:var(--ink-soft); font-size:12.5px; font-weight:800; flex-shrink:0;}
+  .stagetab.active .sn{background:rgba(255,255,255,.24); color:#fff;}
+  .stagetab i.warn{display:none; width:8px; height:8px; border-radius:50%; background:var(--open); margin-left:auto; flex-shrink:0;}
+  .stagetab.has-warn i.warn{display:block;}
+  .stagetab.active.has-warn i.warn{background:#FFE08A;}
+  .sarrow{color:var(--ink-faint); font-size:17px; font-weight:700; flex-shrink:0;}
+
+  .stagepanel{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px 22px;
+    box-shadow:0 1px 2px rgba(17,24,39,.05),0 2px 6px rgba(17,24,39,.05);}
+  .sp-head{display:flex; align-items:baseline; gap:10px; margin-bottom:4px;}
+  .sp-title{font-size:19px; font-weight:800;}
+  .sp-sub{font-size:13.5px; color:var(--ink-faint); font-weight:600;}
+  .sp-roles{margin:14px 0 0; display:flex; flex-direction:column; gap:8px;}
+  .sprole{display:grid; grid-template-columns:88px 1fr; gap:12px; align-items:start; font-size:15px;}
+  .sprole .rk{font-size:12px; font-weight:800; padding:3px 0; text-align:center; border-radius:6px; letter-spacing:.02em;}
+  .rk-a{background:var(--accent-soft); color:var(--accent);}
+  .rk-r{background:var(--biz-bg); color:var(--biz);}
+  .rk-c{background:var(--neutral-bg); color:var(--neutral);}
+  .rk-i{background:var(--surface-2); color:var(--ink-faint);}
+  .rk-dev{background:var(--dev-bg); color:var(--dev);}
+  .sprole .rv{color:var(--ink-soft);} .sprole .rv b{color:var(--ink);}
+  .sp-ho{margin-top:14px; padding:11px 14px; background:var(--tint); border:1px solid var(--line-soft); border-radius:9px; font-size:14px; color:var(--ink-soft);}
+  .sp-ho b{color:var(--accent);}
+  .sp-dec{margin-top:12px; padding:12px 15px; background:var(--open-bg); border:1px solid var(--open-line); border-left:3px solid var(--open); border-radius:9px;}
+  .sp-dec .dk{font-size:12px; font-weight:800; color:var(--open); letter-spacing:.03em;}
+  .sp-dec ul{margin:6px 0 0; padding-left:18px; font-size:14px; color:var(--amber-ink);}
+  .sp-dec li{margin-bottom:3px;}
+  .sp-dec .ref{font-size:12.5px; color:var(--open); font-weight:700; margin-top:6px;}
+  .sp-none{margin-top:12px; font-size:13.5px; color:var(--ok); font-weight:600;}
+
   /* dependency chain */
   .chain{display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; margin:8px 0;}
   .link{flex:1 1 200px; min-width:190px; background:var(--open-bg); border:1.5px solid var(--open-line); border-radius:11px; padding:15px 16px; box-shadow:0 1px 2px rgba(17,24,39,.05),0 2px 6px rgba(17,24,39,.05);}
@@ -152,6 +190,8 @@
     .wrap{padding:38px 16px 70px;} h1{font-size:25px;}
     .facts,.checks{grid-template-columns:1fr;} .term{grid-template-columns:1fr; gap:2px;}
     .flow .arrow,.clink{display:none;} .node,.link{flex-basis:100%;}
+    .sarrow{display:none;} .stagetab{flex-basis:calc(50% - 4px); min-width:0;}
+    .sprole{grid-template-columns:70px 1fr; gap:9px;}
   }
 </style>
 </head>
@@ -160,9 +200,9 @@
 
   <!-- HEADER -->
   <header>
-    <div class="eyebrow">SCM · 공급망 관리 체계 · v3 (아이데이션)</div>
+    <div class="eyebrow">SCM · 공급망 관리 체계 · v4 (아이데이션)</div>
     <h1>아파트멘터리 OEM·ODM<br>공급망 관리 체계</h1>
-    <p class="lede">그룹사 최초 OEM/ODM 착수 건. 맨땅에서 정리한 초기 아이데이션이며, 결론은 도표로, 근거·풀이는 하단 펼치기로 뒀습니다.</p>
+    <p class="lede">OEM/ODM 사업 초기 단계의 공급망 설계 아이데이션입니다. 단계별 흐름·R&amp;R은 클릭해 확인하고, 정할 것은 결정 원장에 모았으며, 근거·풀이는 하단 펼치기에 뒀습니다.</p>
     <div class="statusbar">
       <b>읽기 전 —</b> 본 문서는 <b>개편 정착 구조(담당자 발령 후)</b> 기준입니다. 현재는 발령 전이라 <b>슬로우베드사업팀</b>이 고객사 소통·PM을 대행 중이며, 발령 후 해당 역할이 <b>매트리스유통사업팀</b>으로 이관됩니다. 문서의 "유통사업팀"은 이관 후 기준 표기입니다.
     </div>
@@ -173,115 +213,51 @@
     <div class="k">한눈에</div>
     <ul>
       <li><strong>구조</strong> — 아파트멘터리 = 내부 매트리스 + 외주 프레임 투트랙.</li>
-      <li><strong>R&amp;R</strong> — 고객 소통=유통사업팀 / 공급처 소통=procurement팀(외주)·유통사업팀(내부) / 개발=슬로우베드사업팀+연구소 / 품질=품질관리팀 / <strong>수주 이후 계획·재고·납기=SCM</strong>.</li>
+      <li><strong>R&amp;R</strong> — 고객 소통=유통사업팀 / 공급처 소통=PROCUREMENT팀(외주)·유통사업팀(내부) / 개발=슬로우베드사업팀+연구소 / 품질=품질관리팀 / <strong>수주 이후 계획·재고·납기=SCM</strong>.</li>
       <li><strong>최상류 미결</strong> — <strong>코드 귀속 = 매출·재고 인식 = 정산</strong>이 한 덩어리로 막혀 있음. "슬로우베드가 팔지 않는 재고를 슬로우베드 재고로 잡는 게 맞나"가 핵심.</li>
       <li><strong>리스크</strong> — 프레임 외주가 JIT 거부 → 개런티 재고생산으로 재고 위험이 우리로 이전.</li>
     </ul>
   </div>
 
-  <!-- 1. 개념 -->
+  <!-- 1. 배경 -->
   <section>
-    <div class="sec-label">01 — 개념</div>
-    <h2>용어</h2>
-    <div class="terms">
-      <div class="term"><div class="t">OEM / ODM</div><div class="d">주문자 사양대로 제조(OEM) / 제조사가 개발·설계까지 하여 주문자 브랜드로 납품(ODM). 매트리스는 개발이 우리 안에 있어 ODM 성격.</div></div>
-      <div class="term"><div class="t">3PL (레터스)</div><div class="d">보관·운송·시공 대행. 맡아둘 뿐 소유하지 않음.</div></div>
-      <div class="term"><div class="t">위탁 / 임가공</div><div class="d">위탁 = 외주처가 자재조달·완제품 제작 후 우리가 매입 / 임가공 = 자재를 우리가 대주고 가공만. 프레임은 위탁(일부 사급).</div></div>
-      <div class="term"><div class="t">JIT (오더베이스)</div><div class="d">주문 후 생산·발주, 재고 미보유. 아파트멘터리의 요구 운영 방식.</div></div>
-    </div>
-  </section>
-
-  <!-- 2. 배경 -->
-  <section>
-    <div class="sec-label">02 — 배경</div>
+    <div class="sec-label">01 — 배경</div>
     <h2>사업 배경</h2>
     <p class="sub">기존 외주 업체 납품 불가 → 슬로우베드에 OEM 요청, 개발 완료 상태에서 인프라·공급망 세팅 단계.</p>
     <div class="facts">
-      <div class="fact"><div class="ft">사업 성격</div><div class="fd"><b>그룹사 내 OEM/ODM 판매 최초.</b> 선례 없이 표준을 만드는 과제.</div></div>
+      <div class="fact"><div class="ft">사업 성격</div><div class="fd">그룹사 내 <b>선례가 많지 않은 초기 단계</b>의 OEM/ODM. (시디즈 유사 사례 존재)</div></div>
       <div class="fact"><div class="ft">수량·리드타임</div><div class="fd">B2C 월 <b>약 30세트</b>(소량). 주문~시공 10일~2주. 고객사 <b>JIT 요구</b>.</div></div>
       <div class="fact"><div class="ft">코드 = 이동 게이트</div><div class="fd"><b>코드 없이 실물 이동 불가.</b> 수주 후 코드·ERP 등록 → OMS 연동 순.</div></div>
       <div class="fact"><div class="ft">원가·계약 변수</div><div class="fd">양지 입고 기준 원가 재산정. 표준 <b>납품계약서 공유 대기</b>(고객사 내부 검토 중).</div></div>
     </div>
   </section>
 
-  <!-- 3. 공급 구조 -->
+  <!-- 3. 공급 흐름 · R&R (interactive) -->
   <section>
-    <div class="sec-label">03 — 공급 구조</div>
-    <h2>공급 흐름 · 소싱</h2>
-    <div class="flow">
-      <div class="node b"><div class="role">1 수주</div><div class="who">유통사업팀</div><div class="act">고객 발주→확정</div></div>
-      <div class="arrow">›</div>
-      <div class="node"><div class="role">2 생산</div><div class="who">투트랙</div><div class="act">내부 매트 / 외주 프레임</div></div>
-      <div class="arrow">›</div>
-      <div class="node"><div class="role">3 입고</div><div class="who">양지 창고</div><div class="act">입고·검수</div></div>
-      <div class="arrow">›</div>
-      <div class="node"><div class="role">4 물류·재고</div><div class="who">레터스</div><div class="act">보관·배송</div></div>
-      <div class="arrow">›</div>
-      <div class="node"><div class="role">5 시공</div><div class="who">레터스</div><div class="act">현장 설치</div></div>
+    <div class="sec-label">02 — 공급 흐름 · R&amp;R</div>
+    <h2>단계별 역할과 걸림돌</h2>
+    <p class="sub">단계를 누르면 아래에 주체별 역할·핸드오프·의사결정 지점이 펼쳐집니다. <span class="warn-chip">⚠</span> 표시 단계엔 정할 것이 걸려 있으며, 상세는 04 결정 원장에 모여 있습니다.</p>
+
+    <div class="stagebar" id="stagebar">
+      <button class="stagetab active" data-stage="0"><span class="sn">1</span>수주<i class="warn"></i></button>
+      <span class="sarrow">›</span>
+      <button class="stagetab" data-stage="1"><span class="sn">2</span>생산<i class="warn"></i></button>
+      <span class="sarrow">›</span>
+      <button class="stagetab" data-stage="2"><span class="sn">3</span>입고<i class="warn"></i></button>
+      <span class="sarrow">›</span>
+      <button class="stagetab" data-stage="3"><span class="sn">4</span>물류·재고<i class="warn"></i></button>
+      <span class="sarrow">›</span>
+      <button class="stagetab" data-stage="4"><span class="sn">5</span>시공<i class="warn"></i></button>
+      <span class="sarrow">›</span>
+      <button class="stagetab" data-stage="5"><span class="sn">6</span>AS<i class="warn"></i></button>
     </div>
-    <div class="tbl-scroll" style="margin-top:14px;">
-      <table>
-        <thead><tr><th style="width:15%">품목</th><th style="width:17%">생산</th><th style="width:20%">방식</th><th style="width:22%">공급처 소통</th><th>재고 소유</th></tr></thead>
-        <tbody>
-          <tr><td><div class="fn">매트리스</div></td><td>내부 · 일룸안성</td><td>내부 제조</td><td><span class="owner o-biz">유통사업팀</span></td><td><span class="note">코드 귀속 미결 →<br>05 참조</span></td></tr>
-          <tr><td><div class="fn">프레임</div></td><td>외주 업체</td><td>위탁(일부 사급)</td><td><span class="owner o-buy">procurement팀</span></td><td><span class="note">코드 귀속 미결 +<br>양지 입고 시점</span></td></tr>
-        </tbody>
-      </table>
-    </div>
+
+    <div class="stagepanel" id="stagepanel"><!-- filled by JS --></div>
   </section>
 
-  <!-- 4. R&R + RACI -->
+  <!-- 4. 최상류 미결 -->
   <section>
-    <div class="sec-label">04 — R&amp;R</div>
-    <h2>기능 경계와 걸림돌</h2>
-    <p class="sub">개편 후 정착 구조. RACI 그리드에서 <span class="warn-chip">⚠ 결정 대기</span> 표시가 막힌 지점입니다.</p>
-
-    <div class="tbl-scroll">
-      <table class="raci">
-        <thead>
-          <tr>
-            <th style="text-align:left;">단계</th>
-            <th>유통<br>사업팀</th><th>슬로우<br>베드·연구소</th><th>procure<br>ment팀</th><th>생산</th><th>품질<br>관리팀</th><th>SCM</th><th>레터스</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="blocked">
-            <td class="stage">수주<small>⚠ 코드·매출 귀속</small></td>
-            <td><span class="b-a">A</span></td><td>–</td><td>–</td><td>–</td><td>–</td><td><span class="b-i">I</span></td><td>–</td>
-          </tr>
-          <tr>
-            <td class="stage">생산·내부<br><span style="font-weight:500;color:var(--ink-faint);font-size:11px;">매트/일룸안성</span></td>
-            <td><span class="b-c">C</span></td><td><span class="b-c">C</span></td><td>–</td><td><span class="b-r">R</span></td><td><span class="b-c">C</span></td><td><span class="b-a">A</span></td><td>–</td>
-          </tr>
-          <tr>
-            <td class="stage">생산·외주<br><span style="font-weight:500;color:var(--ink-faint);font-size:11px;">프레임</span></td>
-            <td>–</td><td><span class="b-c">C</span></td><td><span class="b-r">R</span></td><td><span class="b-r">R</span></td><td><span class="b-c">C</span></td><td><span class="b-a">A</span></td><td>–</td>
-          </tr>
-          <tr class="blocked">
-            <td class="stage">입고·검수<small>⚠ 소유권 이전 시점</small></td>
-            <td>–</td><td>–</td><td>–</td><td><span class="b-r">R</span></td><td><span class="b-r">R</span></td><td><span class="b-a">A</span></td><td>–</td>
-          </tr>
-          <tr>
-            <td class="stage">물류·재고</td>
-            <td><span class="b-c">C</span></td><td>–</td><td>–</td><td>–</td><td>–</td><td><span class="b-a">A</span></td><td><span class="b-r">R</span></td>
-          </tr>
-          <tr class="blocked">
-            <td class="stage">시공<small>⚠ 클레임 1차 접점</small></td>
-            <td><span class="b-a">A</span></td><td>–</td><td>–</td><td>–</td><td><span class="b-c">C</span></td><td><span class="b-c">C</span></td><td><span class="b-r">R</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="raci-legend">
-      <span><b class="b-r">R</b> 수행</span><span><b class="b-a">A</b> 최종책임</span><span><b class="b-c">C</b> 협의</span><span><b class="b-i">I</b> 공유</span>
-      <span style="color:var(--open);"><b class="b-c" style="color:var(--open);">·</b> 생산 소통: 내부=유통사업팀 C, 외주=procurement팀 R</span>
-    </div>
-    <p class="note" style="margin-top:10px;">품질(스펙·검사·합불·업체 감사)은 <b>품질관리팀</b>. SCM은 품질 이슈의 <b>납기·소싱 영향</b>만 관리. 개발이 확정한 스펙 문서가 소통 담당에게 넘어가는 것이 첫 핸드오프.</p>
-  </section>
-
-  <!-- 5. 최상류 미결 -->
-  <section>
-    <div class="sec-label">05 — 최상류 미결</div>
+    <div class="sec-label">03 — 최상류 미결</div>
     <h2>코드 = 인식 = 정산</h2>
     <p class="sub">세 개가 사슬로 묶여 있어, 맨 앞(코드 귀속)이 안 정해지면 뒤가 다 막힙니다. SCM 단독 결정 불가.</p>
     <div class="chain">
@@ -304,44 +280,47 @@
       </div>
     </div>
     <div class="chain-root">
-      <b>근본 원인 —</b> 원래 우리 구조는 "사업부 = 브랜드"라 문제가 없었으나, <b>조직개편(매트리스유통사업팀 신설)</b>이 이 등식을 깨면서 "OEM/ODM은 슬로우베드 브랜드 상품이 아닌데 슬로우베드 코드를 강제로 따야 하나"라는 공백이 생김. → <b>재무 + 사업부 + 유통사업팀</b> 공동 결정 필요.
+      <b>근본 원인 —</b> 원래 우리 구조는 "사업부 = 브랜드"라 문제가 없었으나, <b>조직개편(매트리스유통사업팀 신설)</b>이 이 등식을 깨면서 "OEM/ODM은 슬로우베드 브랜드 상품이 아닌데 슬로우베드 코드를 강제로 따야 하나"라는 공백이 생김. → <b>아메바 + 사업부 + 유통사업팀</b> 공동 결정 필요.
     </div>
   </section>
 
-  <!-- 6. 결정 원장 -->
+  <!-- 5. 결정 원장 -->
   <section>
-    <div class="sec-label">06 — 결정 원장</div>
+    <div class="sec-label">04 — 결정 원장</div>
     <h2>정한 것 · 정할 것</h2>
+    <p class="sub">모든 미결을 여기 모았습니다. 팀장 판단의 단일 창구 — 단계 뷰의 ⚠는 이곳을 가리킵니다.<br><span style="font-size:13px;color:var(--ink-faint);">라벨 색 · <span class="owner2 ext" style="padding:1px 8px;">주황</span> 타부서 확인·협의 필요 &nbsp; <span class="owner2 int" style="padding:1px 8px;">회색</span> SCM 주도</span></p>
 
     <div class="grouplbl g-ok">확정</div>
     <div class="ledger">
-      <div class="row ok"><span class="dot"></span><div class="txt">3PL(레터스) 재고 소유 X, 보관 책임만</div><span class="owner2 na">닫힘</span></div>
-      <div class="row ok"><span class="dot"></span><div class="txt">코드·ERP·OMS 체계 = 그룹사 기준, 내부 동일 구조<small>단, "어느 브랜드 코드"는 05 미결.</small></div><span class="owner2 na">닫힘</span></div>
-      <div class="row ok"><span class="dot"></span><div class="txt">기능 경계 확정 (고객=유통 / 외주=procurement / 개발 / 품질 / 공급망=SCM)<small>프레임 외주 소통 = procurement팀으로 확정(그레이존 해소).</small></div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">3PL(바로스·레터스) 재고 소유 X, 보관 책임만</div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">코드·ERP·OMS 체계 = 그룹사 기준, 내부 동일 구조<small>단, "어느 브랜드 코드"는 03 미결.</small></div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">기능 경계 확정 (고객=유통 / 외주=PROCUREMENT / 개발 / 품질 / 공급망=SCM)<small>프레임 외주 소통 = PROCUREMENT팀으로 확정(그레이존 해소).</small></div><span class="owner2 na">닫힘</span></div>
     </div>
 
     <div class="grouplbl g-open">결정 필요</div>
     <div class="ledger">
-      <div class="row root"><span class="dot"></span><div class="txt"><span class="rootmark">최상류</span>코드 귀속 = 매출·재고 인식 = 정산<small>한 덩어리. OEM/ODM에 슬로우베드 코드를 딸 것인가부터.</small></div><span class="owner2 ext">사업부</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">개런티 재고 성격 — 매입 약정 여부·초과분 소진 규칙<small>재고 위험 우리 이전분. 누적재고화 관리.</small></div><span class="owner2 ext">계약·재무</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">소유권 이전 시점 (양지 입고 기준 여부)<small>계약서 소재 미확인. 별도 확인 필요.</small></div><span class="owner2 ext">계약·재무</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">AS 조건·책임 범위<small>표준 납품계약서에 포함. 고객사 공유 대기.</small></div><span class="owner2 ext">계약·고객사</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">클레임 1차 접점 공백 (셀프 해피콜 前, 26 3Q까지)<small>레터스 미제공. 누가 응대?</small></div><span class="owner2 int">사업부·SCM</span></div>
+      <div class="row root"><span class="dot"></span><div class="txt"><span class="rootmark">최상류</span>코드 귀속 = 매출·재고 인식 = 정산<small>한 덩어리. OEM/ODM에 슬로우베드 코드를 딸 것인가부터. (03 참조)</small></div><span class="owner2 ext">사업부·아메바</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">바로스 3PL 사용비 부담 주체 — 아파트멘터리 vs 슬로우베드<small>정산 구조와 직결. 누가 물류비를 지느냐.</small></div><span class="owner2 ext">사업부·재경</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">양지창고 로케이션 할당 협의<small>보관·배송 동선·비용에 영향. 인프라 세팅 선행.</small></div><span class="owner2 int">SCM·물류</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">개런티 재고 성격 — 매입 약정 여부·초과분 소진 규칙<small>재고 위험 우리 이전분. 누적재고화 관리.</small></div><span class="owner2 ext">사업부·SCM</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">소유권 이전 시점 (양지 입고 기준 여부)<small>계약서 소재 미확인. 별도 확인 필요.</small></div><span class="owner2 ext">사업부·SCM</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">AS 대응 구조 검토 · 클레임 책임 범위<small>당사 AS 구조상 가능 여부 + 클레임 1차 접점 공백(셀프 해피콜 26 3Q 前).</small></div><span class="owner2 ext">사업부·SCM</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">AS 조건 (표준 계약서)<small>표준 납품계약서에 포함. 고객사 공유 대기.</small></div><span class="owner2 ext">법무·고객사</span></div>
       <div class="row open"><span class="dot"></span><div class="txt">JIT vs 재고 보유 운영 방식<small>고객 오더베이스 요구 ↔ 개런티 재고 공급.</small></div><span class="owner2 ext">고객사 협의</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">(사업 판단) 외주까지 껴서 OEM/ODM 하는 목적<small>인프라 수익화 vs 통합 수주 방어. 설계 아닌 사업 판단.</small></div><span class="owner2 int">상급자·사업부</span></div>
+      <div class="row open"><span class="dot"></span><div class="txt">(사업 판단) 외주까지 껴서 OEM/ODM 하는 목적<small>인프라 수익화 vs 통합 수주 방어. 설계 아닌 사업 판단.</small></div><span class="owner2 ext">상급자·사업부</span></div>
     </div>
   </section>
 
-  <!-- 7. 인프라 세팅 -->
+  <!-- 6. 인프라 세팅 -->
   <section>
-    <div class="sec-label">07 — SCM 실행</div>
+    <div class="sec-label">05 — SCM 실행</div>
     <h2>인프라 세팅 체크리스트</h2>
     <p class="sub">SCM 영역이 규명됐으니 챙길 항목. 수주가 전체 트리거 — 코드부터 순차.</p>
     <div class="checks">
       <div class="chk">
         <div class="ch">수주 트리거 · 순차</div>
         <ul>
-          <li><b>단품코드 생성·ERP 등록</b> (그룹사 기준, 박스 단위) — <span class="warn-chip" style="font-size:10px;">05 선행</span></li>
+          <li><b>단품코드 생성·ERP 등록</b> (그룹사 기준, 박스 단위) — <span class="warn-chip" style="font-size:10px;">03 선행</span></li>
           <li><b>WMS 연동용 코드 등록</b> (코드 없이 실물 이동 불가)</li>
           <li><b>OMS 아이디 부여·레터스 연동</b> (코드 완료 후)</li>
           <li>아파트멘터리 OMS 접근 정의 (주문·재고·AS 조회, 대리점 수준)</li>
@@ -351,6 +330,7 @@
         <div class="ch">상시 운영</div>
         <ul>
           <li><b>재고 가시성</b> — 출고+생산지 창고 합산 모니터링에 OEM 품목 편입</li>
+          <li><b>양지창고 센터 구성</b> — 몇 개 센터 쓸지 확정 후 보관·배송 동선 설계</li>
           <li><b>납기 모니터링</b> — 투트랙 지연 조기 감지·대응</li>
           <li><b>개런티 재고 트래킹</b> — buffer·초과분 소진 관리</li>
           <li><b>품질→공급망 대응 플로우</b> — 품질관리팀 판정 ↔ SCM 소싱·납기 조정</li>
@@ -359,14 +339,14 @@
     </div>
   </section>
 
-  <!-- 8. 다음 단계 -->
+  <!-- 7. 다음 단계 -->
   <section>
-    <div class="sec-label">08 — 다음 단계</div>
+    <div class="sec-label">06 — 다음 단계</div>
     <h2>어디서부터</h2>
     <div class="steps">
-      <div class="step"><div class="st">최상류 결정 요청 (05)</div><div class="sd">재무·사업부·유통사업팀에 "코드 귀속 = 인식 = 정산" 공동 판단 요청. 나머지 인프라가 여기서 시작.</div></div>
-      <div class="step"><div class="st">계약·재무 확인 3건</div><div class="sd">개런티 재고 성격 / 소유권 이전 시점 / AS 조건. 결정 원장 라벨이 요청처.</div></div>
-      <div class="step"><div class="st">코드 확정 후 인프라 세팅 착수</div><div class="sd">07 체크리스트 순차 실행. 이후 단계별 RACI 상세표로 전개.</div></div>
+      <div class="step"><div class="st">최상류 결정 요청 (03)</div><div class="sd">아메바·사업부에 "코드 귀속 = 인식 = 정산" 공동 판단 요청. 나머지 인프라가 여기서 시작.</div></div>
+      <div class="step"><div class="st">관계부서 확인·협의 (04 원장)</div><div class="sd">개런티 재고 성격 / 소유권 이전 시점 / AS 조건 / 3PL 비용 부담. 원장 라벨이 요청처.</div></div>
+      <div class="step"><div class="st">코드 확정 후 인프라 세팅 착수</div><div class="sd">05 체크리스트 순차 실행. 양지 센터 구성부터 재고 가시성까지.</div></div>
     </div>
   </section>
 
@@ -406,7 +386,7 @@
     <details>
       <summary>외주까지 껴서 OEM/ODM 하는 목적 (A/B 가설)</summary>
       <div class="dbody">
-        <p>procurement팀장 컨선의 본질은 "OEM/ODM인데 왜 내부 제조를 안 쓰고 외주(프레임)를 끼나"였습니다. 두 가설:</p>
+        <p>PROCUREMENT팀장 컨선의 본질은 "OEM/ODM인데 왜 내부 제조를 안 쓰고 외주(프레임)를 끼나"였습니다. 두 가설:</p>
         <ul>
           <li><b>A. 인프라 수익화</b> — 우리 코드·물류·3PL 인프라를 외주 품목에도 얹어 관리 마진을 먹는 모델.</li>
           <li><b>B. 통합 수주 방어</b> — 매트만으론 세트 수주를 못 따니 프레임까지 원소스로 묶어 고객사를 잡음.</li>
@@ -428,8 +408,98 @@
     </details>
   </div>
 
-  <div class="footnote">v3 · 초기 아이데이션. 결정이 채워지는 대로 06 원장·05 사슬을 갱신하고 단계별 RACI 상세표로 전개합니다.</div>
+  <div class="footnote">v4 · 초기 아이데이션. 결정이 채워지는 대로 04 원장·03 사슬을 갱신하고 단계별 상세로 전개합니다.</div>
 
 </div>
+<script>
+(function(){
+  var stages = [
+    { t:'수주', s:'고객 발주 → 확정',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>유통사업팀</b> — 고객 발주 접수·확정, 대외 단일 창구'},
+        {k:'개발',kl:'개발',c:'rk-dev',v:'<b>슬로우베드사업팀+연구소</b> — ODM 수주건, 고객사 요구에 맞게 제품·사양 개발 (수주 선행)'},
+        {k:'I',kl:'공유',c:'rk-i',v:'<b>SCM</b> — 확정 수주를 인계받아 이후 계획 착수'}
+      ],
+      ho:'<b>수주 성사 → SCM.</b> 여기서부터 공급망 계획·실행·통제로 넘어감.',
+      dec:['코드 귀속 = 매출·재고 인식 = 정산 (어느 브랜드 코드를 딸지)'] },
+
+    { t:'생산', s:'투트랙 — 내부 매트 / 외주 프레임',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>SCM</b> — 발주 계획·납기, 두 트랙 모두 총괄'},
+        {k:'R',kl:'수행',c:'rk-r',v:'<b>매트리스</b> 내부 생산(일룸안성) / <b>프레임</b> 외주 업체 — 위탁(일부 사급)'},
+        {k:'C',kl:'공급처 소통',c:'rk-c',v:'프레임 외주 = <b>PROCUREMENT팀</b> / 내부(일룸안성) = <b>유통사업팀</b>'}
+      ],
+      ho:'확정 스펙대로 생산. 개발 관여는 수주 단계에서 이미 종료.',
+      dec:[] },
+
+    { t:'입고·검수', s:'양지 창고 입고·검수',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>SCM</b> — 재고 등록·소유권 관리'},
+        {k:'R',kl:'수행',c:'rk-r',v:'<b>생산(공장·외주 납품)</b> + <b>품질관리팀</b>(입고 검사·합불 판정)'}
+      ],
+      ho:'<b>검수 합격 시 소유권 이전.</b> 불합격분 귀책 = 생산처.',
+      dec:['소유권 이전 시점 (양지 입고 기준 여부)','양지창고 로케이션 할당 협의'] },
+
+    { t:'물류·재고', s:'보관 · 재고 · 배송',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>SCM</b> — 재고 총괄·가시성'},
+        {k:'R',kl:'수행',c:'rk-r',v:'<b>바로스(레터스)</b> — 보관·재고·배송. 소유 X, 보관 책임만'},
+        {k:'C',kl:'협의',c:'rk-c',v:'<b>유통사업팀</b> — 배송 일정 조율'}
+      ],
+      ho:null,
+      dec:['바로스 3PL 사용비 부담 주체 — 아파트멘터리 vs 슬로우베드','개런티 재고 성격 — 매입 약정 여부·초과분 소진 규칙'] },
+
+    { t:'시공', s:'현장 설치',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>유통사업팀</b> — 고객 접점·현장 총괄'},
+        {k:'R',kl:'수행',c:'rk-r',v:'<b>바로스(레터스)</b> — 현장 설치'},
+        {k:'C',kl:'협의',c:'rk-c',v:'<b>품질관리팀</b>(시공 중 하자) · <b>SCM</b>(공급망 영향)'}
+      ],
+      ho:'<b>클레임 → 원인 규명.</b> 유통사업팀 1차 접수 → SCM이 매트·프레임 트랙별 귀책 규명.',
+      dec:[] },
+
+    { t:'AS', s:'설치 후 사후 대응',
+      roles:[
+        {k:'A',kl:'주관',c:'rk-a',v:'<b>유통사업팀</b> — 고객 클레임 1차 접수·응대'},
+        {k:'C',kl:'협의',c:'rk-c',v:'<b>품질관리팀</b>(하자 판정) · <b>SCM</b>(교체품 소싱·재고)'}
+      ],
+      ho:null,
+      dec:['당사 AS 대응 구조 검토 (구조상 가능한지)','고객 클레임에 대한 책임 범위 협의','클레임 1차 접점 공백 (셀프 해피콜 前, 26 3Q까지)'] }
+  ];
+
+  var panel = document.getElementById('stagepanel');
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.stagetab'));
+
+  function render(i){
+    var d = stages[i], h='';
+    h += '<div class="sp-head"><div class="sp-title">'+d.t+'</div><div class="sp-sub">'+d.s+'</div></div>';
+    h += '<div class="sp-roles">';
+    d.roles.forEach(function(r){
+      h += '<div class="sprole"><div class="rk '+r.c+'">'+r.kl+'</div><div class="rv">'+r.v+'</div></div>';
+    });
+    h += '</div>';
+    if(d.ho){ h += '<div class="sp-ho">↪ 핸드오프 · '+d.ho+'</div>'; }
+    if(d.dec && d.dec.length){
+      h += '<div class="sp-dec"><div class="dk">⚠ 의사결정 필요</div><ul>';
+      d.dec.forEach(function(x){ h += '<li>'+x+'</li>'; });
+      h += '</ul><div class="ref">→ 04 결정 원장에서 관리</div></div>';
+    } else {
+      h += '<div class="sp-none">✓ 이 단계에 열린 결정 없음</div>';
+    }
+    panel.innerHTML = h;
+  }
+
+  tabs.forEach(function(tab){
+    var i = parseInt(tab.getAttribute('data-stage'),10);
+    if(stages[i].dec && stages[i].dec.length){ tab.classList.add('has-warn'); }
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      render(i);
+    });
+  });
+  render(0);
+})();
+</script>
 </body>
 </html>
