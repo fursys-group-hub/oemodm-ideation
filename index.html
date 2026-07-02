@@ -149,6 +149,21 @@
   /* ledger */
   .grouplbl{font-size:13.5px; font-weight:800; margin:20px 0 8px;}
   .grouplbl.g-ok{color:var(--ok);} .grouplbl.g-open{color:var(--open);}
+  /* decision roadmap */
+  .roadmap{display:flex; flex-direction:column; gap:10px; margin:2px 0 26px;}
+  .rm-item{display:grid; grid-template-columns:36px 1fr; gap:14px; align-items:start; background:var(--surface);
+    border:1px solid var(--line); border-radius:11px; padding:15px 18px; box-shadow:0 1px 2px rgba(17,24,39,.05),0 2px 6px rgba(17,24,39,.05);}
+  .rm-item.p1{border-left:4px solid var(--open);}
+  .rm-item.p2{border-left:4px solid var(--biz);}
+  .rm-item.p3{border-left:4px solid var(--neutral);}
+  .rm-num{width:32px; height:32px; border-radius:9px; background:var(--accent); color:#fff; font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center;}
+  .rm-t{font-size:16.5px; font-weight:800; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .rm-tag{font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:14px;}
+  .tag-in{background:var(--biz-bg); color:var(--biz);}
+  .tag-out{background:var(--open-bg); color:var(--open);}
+  .tag-op{background:var(--neutral-bg); color:var(--neutral);}
+  .rm-d{font-size:14px; color:var(--ink-soft); margin-top:4px;}
+  .rm-d b{color:var(--ink);}
   .ledger{display:flex; flex-direction:column; gap:9px;}
   .row{display:grid; grid-template-columns:18px 1fr auto; align-items:start; gap:11px; background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:12px 14px; box-shadow:0 1px 2px rgba(17,24,39,.05),0 2px 6px rgba(17,24,39,.05);}
   .row.ok{border-left:4px solid var(--ok);} .row.open{border-left:4px solid var(--open);} .row.root{border-left:4px solid var(--open); background:var(--amber-tint);}
@@ -216,6 +231,7 @@
       <li><strong>R&amp;R</strong> — 고객 소통=유통사업팀 / 공급처 소통=PROCUREMENT팀(외주)·유통사업팀(내부) / 개발=슬로우베드사업팀+연구소 / 품질=품질관리팀 / <strong>수주 이후 계획·재고·납기=SCM</strong>.</li>
       <li><strong>최상류 미결</strong> — <strong>코드 귀속 = 매출·재고 인식 = 정산</strong>이 한 덩어리로 막혀 있음. "슬로우베드가 팔지 않는 재고를 슬로우베드 재고로 잡는 게 맞나"가 핵심.</li>
       <li><strong>리스크</strong> — 프레임 외주가 JIT 거부 → 개런티 재고생산으로 재고 위험이 우리로 이전.</li>
+      <li><strong>뭐부터</strong> — ① <b>코드 귀속</b>(대내 트리거) 사내 결정 → ② <b>대외 책임·비용 프레임</b>(계약 병목, 재고 소진·3PL 비용 고객사로) → ③ 운영 실무. (04 로드맵)</li>
     </ul>
   </div>
 
@@ -290,11 +306,37 @@
     <h2>정한 것 · 정할 것</h2>
     <p class="sub">모든 미결을 여기 모았습니다. 팀장 판단의 단일 창구 — 단계 뷰의 ⚠는 이곳을 가리킵니다.<br><span style="font-size:13px;color:var(--ink-faint);">라벨 색 · <span class="owner2 ext" style="padding:1px 8px;">주황</span> 타부서 확인·협의 필요 &nbsp; <span class="owner2 int" style="padding:1px 8px;">회색</span> SCM 주도</span></p>
 
+    <h3 style="margin-top:8px;">결정 로드맵 — 뭐부터</h3>
+    <div class="roadmap">
+      <div class="rm-item p1">
+        <div class="rm-num">1</div>
+        <div>
+          <div class="rm-t">코드 귀속 <span class="rm-tag tag-in">대내 · 트리거</span></div>
+          <div class="rm-d"><b>사업부·아메바 소집.</b> 코드 생성·실물 이동·매출/재고 인식이 전부 여기서 시작 — 안 풀리면 나머지가 전부 멈춤. 가장 먼저.</div>
+        </div>
+      </div>
+      <div class="rm-item p2">
+        <div class="rm-num">2</div>
+        <div>
+          <div class="rm-t">대외 책임·비용 프레임 <span class="rm-tag tag-out">대외 · 계약 병목</span></div>
+          <div class="rm-d">소유권 이전 시점 · AS 조건 · 3PL 비용 부담이 <b>하나의 계약</b>에 묶여 있음. <b>협상 포지션</b> — 재고 보유가 확정된 만큼, 재고 소진 부담과 3PL 정산을 <b>고객사가 지도록</b> 유도(계약서 확보가 열쇠).</div>
+        </div>
+      </div>
+      <div class="rm-item p3">
+        <div class="rm-num">3</div>
+        <div>
+          <div class="rm-t">운영 실무 <span class="rm-tag tag-op">SCM 자체 진행</span></div>
+          <div class="rm-d">양지 로케이션 할당 · 개런티 재고 소진 규칙. 위 1·2가 정해지면 SCM이 바로 돌릴 수 있는 실무.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="grouplbl g-ok">확정</div>
     <div class="ledger">
       <div class="row ok"><span class="dot"></span><div class="txt">3PL(바로스·레터스) 재고 소유 X, 보관 책임만</div><span class="owner2 na">닫힘</span></div>
       <div class="row ok"><span class="dot"></span><div class="txt">코드·ERP·OMS 체계 = 그룹사 기준, 내부 동일 구조<small>단, "어느 브랜드 코드"는 03 미결.</small></div><span class="owner2 na">닫힘</span></div>
       <div class="row ok"><span class="dot"></span><div class="txt">기능 경계 확정 (고객=유통 / 외주=PROCUREMENT / 개발 / 품질 / 공급망=SCM)<small>프레임 외주 소통 = PROCUREMENT팀으로 확정(그레이존 해소).</small></div><span class="owner2 na">닫힘</span></div>
+      <div class="row ok"><span class="dot"></span><div class="txt">운영 방식 = 재고 보유로 확정<small>공급처 JIT 불가 → 재고 보유. 소진 리스크는 현재 우리 부담 (아래 협상 과제로 연결).</small></div><span class="owner2 na">닫힘</span></div>
     </div>
 
     <div class="grouplbl g-open">결정 필요</div>
@@ -306,7 +348,6 @@
       <div class="row open"><span class="dot"></span><div class="txt">소유권 이전 시점 (양지 입고 기준 여부)<small>계약서 소재 미확인. 별도 확인 필요.</small></div><span class="owner2 ext">사업부·SCM</span></div>
       <div class="row open"><span class="dot"></span><div class="txt">AS 대응 구조 검토 · 클레임 책임 범위<small>당사 AS 구조상 가능 여부 + 클레임 1차 접점 공백(셀프 해피콜 26 3Q 前).</small></div><span class="owner2 ext">사업부·SCM</span></div>
       <div class="row open"><span class="dot"></span><div class="txt">AS 조건 (표준 계약서)<small>표준 납품계약서에 포함. 고객사 공유 대기.</small></div><span class="owner2 ext">법무·고객사</span></div>
-      <div class="row open"><span class="dot"></span><div class="txt">JIT vs 재고 보유 운영 방식<small>고객 오더베이스 요구 ↔ 개런티 재고 공급.</small></div><span class="owner2 ext">고객사 협의</span></div>
       <div class="row open"><span class="dot"></span><div class="txt">(사업 판단) 외주까지 껴서 OEM/ODM 하는 목적<small>인프라 수익화 vs 통합 수주 방어. 설계 아닌 사업 판단.</small></div><span class="owner2 ext">상급자·사업부</span></div>
     </div>
   </section>
